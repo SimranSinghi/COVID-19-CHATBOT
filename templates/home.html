@@ -2,14 +2,14 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <div class="jumbotron text-center">
+  <!-- <div class="jumbotron text-center">
     <h1>Welcome To FlaskApp</h1>
     <p class="lead">This application is built on the Python Flask framework and is the focus for the "Python Flask From Scratch" YouTube series</p>
     <!-- {% if session.logged_in == NULL %}
       <a href="/register" class="btn btn-primary btn-lg">Register</a>
       <a href="/login" class="btn btn-success btn-lg">Login</a>
     {% endif %} -->
-  </div>
+  <!-- </div> --> 
   <script type="text/javascript">
     (function(d, m){
         var kommunicateSettings = 
@@ -20,6 +20,75 @@
         window.kommunicate = m; m._globals = kommunicateSettings;
     })(document, window.kommunicate || {});
 </script>
+<!DOCTYPE html>
+<html>
+<head>
+ <link href="{{ url_for('static', filename='home.css') }}" rel="stylesheet">  
+   
+<title>Covid-19 Live  Data</title>
+ 
 
+  <title>Home</title>
+  
+</head>
+<body>
+       <!-- <div class="topnav" id="myTopnav">
+  <a href="/" class="active">Global</a>
+  <a href="/"> Countries</a>
+  <a href="/">About Us</a>
+    <a href="/">Contact Us</a>
+           
+  
+
+</div> -->
+
+    <div class="banner">
+        <h1>Coronavirus Global Stats</h1>
+
+    </div>
+    <br>
+    
+   <br>
+    <div class="leftpane">
+
+      <h4>New Deaths </h4>
+<h4>
+  {{nd_n}}
+</h4><br>
+         <h4>New Cases </h4>
+<h4>
+  {{nc_n}}
+</h4><br>
+        <h4>New Recovered </h4>
+<h4> {{nr_n}} </h4>
+                 <br>
+    <div class="banner2">
+
+</div>
+</div>
+    
+    <div class="rightpane">
+        <h4>Total Deaths </h4>
+<h4>
+  {{td_n}}
+</h4><br>
+         <h4>Total Cases </h4>
+<h4>
+  {{tc_n}}
+</h4><br>
+         <h4>Total Reecoverd </h4>
+<h4>
+  {{tr_n}}
+</h4><br>
+<div class="banner2">
+
+</div>
+</div>
+<div>
+  <h3 style="background-color:lightblue">Updated On: {{date}} </h3> 
+</div>
+    
+</body>
+</html>
 {%endblock%}
 
