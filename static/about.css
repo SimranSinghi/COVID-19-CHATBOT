@@ -3,14 +3,14 @@ body {
        font-size: 15px;
        line-height: 22px;
        text-align: center;
-   
+       
    
         }
         /* top blue white image box */
  .banner {
         position: relative;
         height: 250px;
-        background-image: url("https://ocdc.coop/wp-content/uploads/2020/09/Focus-Area-Graphic-COVID-19-1.png");
+        background-image: url("https://media.istockphoto.com/vectors/abstract-medical-background-with-flat-icons-and-symbols-concepts-and-vector-id1135100330?k=20&m=1135100330&s=612x612&w=0&h=k6gowDracCMR2Hy1K9Dm2ehWcIXuEUD-v5Hza9NtecE=");
         background-size: cover;
         display: flex;
         justify-content: center;

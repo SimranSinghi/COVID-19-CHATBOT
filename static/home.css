@@ -3,6 +3,7 @@ body {
     font-size: 15px;
     line-height: 22px;
     text-align: center;
+    background-image: url("https://blogs.imf.org/wp-content/uploads/2020/04/BLOG-2099x600-RES-5-charts-MF3d-iStock-by-Getty-Images-iStock-1210435738.jpg");
 
 
      }
@@ -20,7 +21,8 @@ body {
    .banner {
     position: relative;
     height: 250px;
-    background-image: url("https://images.pexels.com/photos/3844550/pexels-photo-3844550.jpeg");
+    background-image: url("https://www.berlinger.com/fileadmin/_processed_/d/5/csm_960x500_Covid_Blog_4_2c9496fe24.jpg");
+    
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -39,7 +41,7 @@ body {
          .banner2 {
     position: relative;
     height: 270px;
-    background-image: url("https://cdn.pixabay.com/photo/2013/06/06/15/36/world-117174_1280.png");
+    /* background-image: url("https://cdn.pixabay.com/photo/2013/06/06/15/36/world-117174_1280.png"); */
     background-size: cover;
 
     justify-content: center;
@@ -52,12 +54,14 @@ body {
   width: 50%;
   height: 50%;
   float: left;
+  background-image: url("https://drexel.edu/~/media/Images/medicine/backgrounds/backgroundAbstractMolecules/mobile.ashx");
    background-color: gainsboro;
   border-collapse: collapse;
 }
 
     .rightpane {
      position: relative;
+     background-image: url("https://drexel.edu/~/media/Images/medicine/backgrounds/backgroundAbstractMolecules/mobile.ashx");
 width: 50%;
 height: 50%;
         background-color:antiquewhite;
