@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+<link href="{{ url_for('static', filename='articles.css') }}" rel="stylesheet"> 
   <h1>Articles</h1>
   <ul class="list-group">
     {% for article in articles %}

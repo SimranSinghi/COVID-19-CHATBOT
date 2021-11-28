@@ -2,56 +2,22 @@ body {
       
        font-size: 15px;
        line-height: 22px;
-       text-align: center;
-       
+       /* # text-align: center; */
+       background-image: url("https://www.epcrsoftware.com/137053.jpg");
    
         }
         /* top blue white image box */
  .banner {
         position: relative;
         height: 250px;
-        background-image: url("https://media.istockphoto.com/vectors/abstract-medical-background-with-flat-icons-and-symbols-concepts-and-vector-id1135100330?k=20&m=1135100330&s=612x612&w=0&h=k6gowDracCMR2Hy1K9Dm2ehWcIXuEUD-v5Hza9NtecE=");
+        
         background-size: cover;
         display: flex;
         justify-content: center;
         align-items: center;
         text-align: center;
-        }
-        /* # world map */
-        .banner2 {
-              position: relative;
-              height: 270px;
-              /* background-image: url("https://cdn.pixabay.com/photo/2013/06/06/15/36/world-117174_1280.png"); */
-              background-size: cover;
-          
-              justify-content: center;
-              align-items: center;
-              text-align: center;
-              }
-              .leftpane {
-                     position: relative;
-                  width: 50%;
-                  height: 50%;
-                  float: left;
-                   /* background-color: gainsboro; */
-                  border-collapse: collapse;
-                }
-                .rightpane {
-                     position: relative;
-                width: 50%;
-                height: 50%;
-                        /* background-color:antiquewhite; */
-                float: right;
-              .bottom {
-                     position: fixed;
-                     bottom: 1px;
-                       float:bottom;
-                        width: 100%;
-                   
-                   }
-                   
-                   
-                   
+        } 
+       
                    .topnav {
                    overflow: hidden;
                    background-color: black;

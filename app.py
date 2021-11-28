@@ -22,7 +22,15 @@ mysql = MySQL(app)
 
 Articles = Articles()
 summary_url_temp="https://api.covid19api.com/summary" #api link
-
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
 @app.route('/')
 def index():
     response = requests.get(summary_url_temp)#get the response from the link
@@ -51,11 +59,27 @@ def index():
 # About
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    
+    cur = mysql.connection.cursor()
 
+    # Get articles
+    result = cur.execute("SELECT * FROM articles")
+    # Show articles only from the user logged in 
+    # result = cur.execute("SELECT * FROM articles WHERE author = %s", [session['username']])
+
+    articles = cur.fetchall()
+
+    if result > 0:
+        return render_template('about.html', articles=articles)
+    else:
+        msg = 'No Articles Found'
+        return render_template('about.html', msg=msg)
+    # Close connection
+    cur.close()
 
 # Articles
 @app.route('/articles')
+@is_logged_in
 def articles():
     # Create cursor
     cur = mysql.connection.cursor()
@@ -167,15 +191,7 @@ def login():
     return render_template('login.html')
 
 # Check if user logged in
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash('Unauthorized, Please login', 'danger')
-            return redirect(url_for('login'))
-    return wrap
+
 
 # Logout
 @app.route('/logout')
