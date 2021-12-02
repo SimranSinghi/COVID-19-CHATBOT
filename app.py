@@ -122,6 +122,11 @@ class RegisterForm(Form):
         validators.EqualTo('confirm', message='Passwords do not match')
     ])
     confirm = PasswordField('Confirm Password')
+# Maps
+@app.route('/gmaps')
+@is_logged_in
+def gmap():
+     return render_template('gmaps.html')
 
 
 # User Register
