@@ -5,6 +5,7 @@ from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 from flask import jsonify
+import  os
 import json
 import requests
 # from flask_sqlalchemy import SQLAlchemy
@@ -323,4 +324,4 @@ def delete_article(id):
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
