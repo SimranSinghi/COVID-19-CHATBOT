@@ -12,7 +12,7 @@ import requests
 app = Flask(__name__)
 
 # config mySQL
-app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_HOST'] = '35.232.223.134'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'myflaskapp'
