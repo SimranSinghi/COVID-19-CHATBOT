@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+<link href="{{ url_for('static', filename='register.css') }}" rel="stylesheet"> 
   <h1>Register</h1>
   {% from "includes/_formhelpers.html" import render_field %}
   <form method="POST" action="">
