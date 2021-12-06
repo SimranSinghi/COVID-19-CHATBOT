@@ -10,43 +10,31 @@ import json
 import requests
 import pymysql
 from flask_sqlalchemy import SQLAlchemy
+import mysql.connector
+from mysql.connector.constants import ClientFlag
 # from datetime import datetime
 app = Flask(__name__)
 
-# # config mySQL
-# app.config['MYSQL_HOST'] = '35.232.223.134'
-# app.config['MYSQL_USER'] = 'root'
-# app.config['MYSQL_PASSWORD'] = 'password'
-# app.config['MYSQL_DB'] = 'myflaskapp'
-# app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+config = {
+    'user': 'root',
+    'password': 'Password',
+    'host': '34.135.90.63',
+    'client_flags': [ClientFlag.SSL],
+    'ssl_ca': 'server-ca.pem',
+    'ssl_cert': 'client-cert.pem',
+    'ssl_key': 'client-key.pem'
+}
+# now we establish our connection
+cnxn = mysql.connector.connect(**config)
 
-db_user = os.environ['root']
-db_pass = os.environ['password']
-db_name = os.environ['myflaskapp']
-instance_connection_name = os.environ['covid-19-334218:us-central1:covid-sql']
+cursor = cnxn.cursor()  # initialize connection cursor
+cursor.execute('CREATE DATABASE myflaskapp')  # create a new 'testdb' database
+cnxn.close()  # close connection because we will be reconnecting to testdb
 
-unix_socket = '/cloudsql/{}'.format(instance_connection_name) 
-    
-pool = sqlalchemy.create_engine(
-    # Equivalent URL:
-    # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=<socket_path>/<cloud_sql_instance_name>
-    sqlalchemy.engine.url.URL.create(
-        drivername="mysql+pymysql",
-        username=db_user,  # e.g. "my-database-user"
-        password=db_pass,  # e.g. "my-database-password"
-        database=db_name,
-        unix_socket=unix_socket, 
-        instance_connection_name = os.environ['covid-19-334218:us-central1:covid-sql'], # e.g. "my-database-name"
-        query={
-            "unix_socket": "{}/{}".format(  # e.g. "/cloudsql"
-                instance_connection_name)  # i.e "<PROJECT-NAME>:<INSTANCE-REGION>:<INSTANCE-NAME>"
-        }
-    ),
-    **db_config
-)
+config['database'] = 'myflaskapp'  # add new database to config dict
+cnxn = mysql.connector.connect(**config)
+cursor = cnxn.cursor()
 
-
-mysql = MySQL(app)
 
 Articles = Articles()
 summary_url_temp="https://api.covid19api.com/summary" #api link
