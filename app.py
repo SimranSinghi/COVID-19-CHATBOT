@@ -8,16 +8,39 @@ from flask import jsonify
 import  os
 import json
 import requests
-# from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 # from datetime import datetime
 app = Flask(__name__)
 
-# config mySQL
-app.config['MYSQL_HOST'] = '35.232.223.134'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'myflaskapp'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+# # config mySQL
+# app.config['MYSQL_HOST'] = '35.232.223.134'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = 'password'
+# app.config['MYSQL_DB'] = 'myflaskapp'
+# app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+db_user = os.environ["root"]
+db_pass = os.environ["password"]
+db_name = os.environ["myflaskapp"]
+db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
+instance_connection_name = os.environ["covid-19-334218:us-central1:covid-sql"]
+
+pool = sqlalchemy.create_engine(
+    # Equivalent URL:
+    # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=<socket_path>/<cloud_sql_instance_name>
+    sqlalchemy.engine.url.URL.create(
+        drivername="mysql+pymysql",
+        username=db_user,  # e.g. "my-database-user"
+        password=db_pass,  # e.g. "my-database-password"
+        database=db_name,  # e.g. "my-database-name"
+        query={
+            "unix_socket": "{}/{}".format(
+                db_socket_dir,  # e.g. "/cloudsql"
+                instance_connection_name)  # i.e "<PROJECT-NAME>:<INSTANCE-REGION>:<INSTANCE-NAME>"
+        }
+    ),
+    **db_config
+)
 
 mysql = MySQL(app)
 
