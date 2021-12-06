@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
 from data import Articles
-from flask_mysqldb import MySQL
+# from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
@@ -8,12 +8,9 @@ from flask import jsonify
 import  os
 import json
 import requests
-import pymysql
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
 from mysql.connector.constants import ClientFlag
-import mysql.connector
-from mysql.connector import (connection)
 import requests
 # from flask_sqlalchemy import SQLAlchemy
 # from datetime import datetime
@@ -33,14 +30,14 @@ config = {
 # now we establish our connection
 cnxn = mysql.connector.connect(**config)
 cursor = cnxn.cursor()  # initialize connection cursor
-cursor.execute('CREATE DATABASE myflaskapp')  # create a new 'testdb' database
-cnxn.close()  # close connection because we will be reconnecting to testdb
-config['database'] = 'myflaskapp'  # add new database to config dict
-cnxn = mysql.connector.connect(**config)
-cursor = cnxn.cursor()
-cursor.execute("CREATE TABLE users (id int(11) AUTO_INCREMENT PRIMARY KEY,name varchar(100),email varchar(100), username varchar(30),password varchar(100), register_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP);")
+cursor.execute('CREATE DATABASE IF NOT EXISTS myflaskapp_new')  # create a new 'testdb' database
+# cnxn.close() 
+#  # close connection because we will be reconnecting to testdb
+cursor.execute("USE myflaskapp_new")
+config['database'] = 'myflaskapp_new'  # add new database to config dict
+cursor.execute("CREATE TABLE IF NOT EXISTS users (id int(11) AUTO_INCREMENT PRIMARY KEY,name varchar(100),email varchar(100), username varchar(30),password varchar(100), register_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP);")
 
-cursor.execute('CREATE TABLE articles_test (id int(11) AUTO_INCREMENT PRIMARY KEY, title varchar(225), author varchar(100), body TEXT, create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP);')
+cursor.execute('CREATE TABLE IF NOT EXISTS articles (id int(11) AUTO_INCREMENT PRIMARY KEY, title varchar(225), author varchar(100), body TEXT, create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP);')
 cnxn.commit()
 # from datetime import datetime
 
@@ -85,54 +82,55 @@ def index():
 @app.route('/about')
 def about():
     
-    cur = mysql.connection.cursor()
+    # cursor = mysql.connection.cursor()
+
 
     # Get articles
-    result = cur.execute("SELECT * FROM articles")
+    result = cursor.execute("SELECT * FROM articles")
     # Show articles only from the user logged in 
     # result = cur.execute("SELECT * FROM articles WHERE author = %s", [session['username']])
 
-    articles = cur.fetchall()
+    articles = cursor.fetchall()
 
-    if result > 0:
+    if articles != None:
         return render_template('about.html', articles=articles)
     else:
         msg = 'No Articles Found'
         return render_template('about.html', msg=msg)
     # Close connection
-    cur.close()
+    # cursor.close()
 
 # Articles
 @app.route('/articles')
 @is_logged_in
 def articles():
     # Create cursor
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
 
     # Get articles
-    result = cur.execute("SELECT * FROM articles")
+    result = cursor.execute("SELECT * FROM articles")
 
-    articles = cur.fetchall()
+    articles = cursor.fetchall()
 
-    if result > 0:
+    if articles != None:
         return render_template('articles.html', articles=articles)
     else:
         msg = 'No Articles Found'
         return render_template('articles.html', msg=msg)
     # Close connection
-    cur.close()
+    # cur.close()
 
 
 #Single Article
 @app.route('/article/<string:id>/')
 def article(id):
     # Create cursor
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
 
     # Get article
-    result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
+    result = cursor.execute("SELECT * FROM articles WHERE id = %s", [id])
 
-    article = cur.fetchone()
+    article = cursor.fetchone()
 
     return render_template('article.html', article=article)
 
@@ -165,18 +163,19 @@ def register():
         password = sha256_crypt.encrypt(str(form.password.data))
 
         # Create cursor
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
 
         # Execute query
-        cur.execute("INSERT INTO users(name, email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
+        cursor.execute("INSERT INTO users(name, email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
 
         # Commit to DB
-        mysql.connection.commit()
+        # mysql.connection.commit()
 
         # Close connection
-        cur.close()
+        # cur.close()
 
         flash('You are now registered and can log in', 'success')
+        cnxn.commit()
 
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
@@ -191,15 +190,16 @@ def login():
         password_candidate = request.form['password']
 
         # Create cursor
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
 
         # Get user by username
-        result = cur.execute("SELECT * FROM users WHERE username = %s", [username])
-
-        if result > 0:
+        result = cursor.execute("SELECT * FROM users WHERE username = %s", [username])
+        print(result)
+        data = cursor.fetchone()
+        if data != None:
             # Get stored hash
-            data = cur.fetchone()
-            password = data['password']
+           
+            password = data[4]
 
             # Compare Passwords
             if sha256_crypt.verify(password_candidate, password):
@@ -213,7 +213,7 @@ def login():
                 error = 'Invalid login'
                 return render_template('login.html', error=error)
             # Close connection
-            cur.close()
+            # cur.close()
         else:
             error = 'Username not found'
             return render_template('login.html', error=error)
@@ -236,22 +236,22 @@ def logout():
 @is_logged_in
 def dashboard():
     # Create cursor
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
 
     # Get articles
     #result = cur.execute("SELECT * FROM articles")
     # Show articles only from the user logged in 
-    result = cur.execute("SELECT * FROM articles WHERE author = %s", [session['username']])
+    result = cursor.execute("SELECT * FROM articles WHERE author = %s", [session['username']])
 
-    articles = cur.fetchall()
+    articles = cursor.fetchall()
 
-    if result > 0:
+    if articles!= None:
         return render_template('dashboard.html', articles=articles)
     else:
         msg = 'No Articles Found'
         return render_template('dashboard.html', msg=msg)
     # Close connection
-    cur.close()
+    # cur.close()
 
 # Article Form Class
 class ArticleForm(Form):
@@ -268,16 +268,16 @@ def add_article():
         body = form.body.data
 
         # Create Cursor
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("INSERT INTO articles(title, body, author) VALUES(%s, %s, %s)",(title, body, session['username']))
+        cursor.execute("INSERT INTO articles(title, body, author) VALUES(%s, %s, %s)",(title, body, session['username']))
 
         # Commit to DB
-        mysql.connection.commit()
+        cnxn.commit()
 
         #Close connection
-        cur.close()
+        # cursor.close()
 
         flash('Article Created', 'success')
 
@@ -291,13 +291,13 @@ def add_article():
 @is_logged_in
 def edit_article(id):
     # Create cursor
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
 
     # Get article by id
-    result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
+    result = cursor.execute("SELECT * FROM articles WHERE id = %s", [id])
 
-    article = cur.fetchone()
-    cur.close()
+    article = cursor.fetchone()
+    # cur.close()
     # Get form
     form = ArticleForm(request.form)
 
@@ -310,15 +310,15 @@ def edit_article(id):
         body = request.form['body']
 
         # Create Cursor
-        cur = mysql.connection.cursor()
+        # cur = mysql.connection.cursor()
         app.logger.info(title)
         # Execute
-        cur.execute ("UPDATE articles SET title=%s, body=%s WHERE id=%s",(title, body, id))
+        cursor.execute ("UPDATE articles SET title=%s, body=%s WHERE id=%s",(title, body, id))
         # Commit to DB
         mysql.connection.commit()
 
         #Close connection
-        cur.close()
+        # cur.close()
 
         flash('Article Updated', 'success')
 
@@ -331,16 +331,16 @@ def edit_article(id):
 @is_logged_in
 def delete_article(id):
     # Create cursor
-    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor()
 
     # Execute
-    cur.execute("DELETE FROM articles WHERE id = %s", [id])
+    cursor.execute("DELETE FROM articles WHERE id = %s", [id])
 
     # Commit to DB
     mysql.connection.commit()
 
     #Close connection
-    cur.close()
+    # cur.close()
 
     flash('Article Deleted', 'success')
 

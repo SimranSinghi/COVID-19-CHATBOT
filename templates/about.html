@@ -11,10 +11,10 @@
   
     {% for article in articles %}
       <tr>
-        <td>{{article.id}}</td>
-        <td><h3> {{article.title}}</h3></td>
+        <td>{{article[0]}}</td>
+        <td><h3> {{article[1]}}</h3></td>
         <div>
-          {{article.body | safe}}
+          {{article[3] | safe}}
         </div>   
       </tr>
 
