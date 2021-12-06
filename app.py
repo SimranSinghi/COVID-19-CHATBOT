@@ -12,28 +12,37 @@ import pymysql
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
 from mysql.connector.constants import ClientFlag
+import mysql.connector
+from mysql.connector import (connection)
+import requests
+# from flask_sqlalchemy import SQLAlchemy
 # from datetime import datetime
 app = Flask(__name__)
 
+
 config = {
     'user': 'root',
-    'password': 'Password',
+    'password': 'password',
     'host': '34.135.90.63',
     'client_flags': [ClientFlag.SSL],
     'ssl_ca': 'server-ca.pem',
     'ssl_cert': 'client-cert.pem',
     'ssl_key': 'client-key.pem'
 }
+
 # now we establish our connection
 cnxn = mysql.connector.connect(**config)
-
 cursor = cnxn.cursor()  # initialize connection cursor
 cursor.execute('CREATE DATABASE myflaskapp')  # create a new 'testdb' database
 cnxn.close()  # close connection because we will be reconnecting to testdb
-
 config['database'] = 'myflaskapp'  # add new database to config dict
 cnxn = mysql.connector.connect(**config)
 cursor = cnxn.cursor()
+cursor.execute("CREATE TABLE users (id int(11) AUTO_INCREMENT PRIMARY KEY,name varchar(100),email varchar(100), username varchar(30),password varchar(100), register_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP);")
+
+cursor.execute('CREATE TABLE articles_test (id int(11) AUTO_INCREMENT PRIMARY KEY, title varchar(225), author varchar(100), body TEXT, create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP);')
+cnxn.commit()
+# from datetime import datetime
 
 
 Articles = Articles()
@@ -339,4 +348,4 @@ def delete_article(id):
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
