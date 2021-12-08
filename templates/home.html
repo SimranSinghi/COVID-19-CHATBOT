@@ -10,7 +10,7 @@
       <a href="/login" class="btn btn-success btn-lg">Login</a>
     {% endif %} -->
   <!-- </div> --> 
-  <script type="text/javascript">
+  <!-- <script type="text/javascript">
     (function(d, m){
         var kommunicateSettings = 
             {"appId":"234aa935d9717ed6b5a20b8203df7591f","popupWidget":true,"automaticChatOpenOnNavigation":true};
@@ -19,7 +19,15 @@
         var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
         window.kommunicate = m; m._globals = kommunicateSettings;
     })(document, window.kommunicate || {});
-</script>
+</script> -->
+
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+  intent="WELCOME"
+  chat-title="COVID19CHATBOT"
+  agent-id="11ceb767-8d0d-4b1b-9636-3c1cac0ceca3"
+  language-code="en"
+></df-messenger>
 <!DOCTYPE html>
 <html>
 <head>

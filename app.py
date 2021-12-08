@@ -29,7 +29,7 @@ config = {
 
 # now we establish our connection
 cnxn = mysql.connector.connect(**config)
-cursor = cnxn.cursor()  # initialize connection cursor
+cursor = cnxn.cursor(buffered=True)  # initialize connection cursor
 cursor.execute('CREATE DATABASE IF NOT EXISTS myflaskapp_new')  # create a new 'testdb' database
 # cnxn.close() 
 #  # close connection because we will be reconnecting to testdb
@@ -206,6 +206,7 @@ def login():
                 # Passed
                 session['logged_in'] = True
                 session['username'] = username
+                session['id'] = data[0]
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
@@ -294,7 +295,8 @@ def edit_article(id):
     # cur = mysql.connection.cursor()
 
     # Get article by id
-    result = cursor.execute("SELECT * FROM articles WHERE id = %s", [id])
+    if id != None:
+        result = cursor.execute("SELECT * FROM articles WHERE id = %s", [id])
 
     article = cursor.fetchone()
     # cur.close()
@@ -302,20 +304,25 @@ def edit_article(id):
     form = ArticleForm(request.form)
 
     # Populate article form fields
-    form.title.data = article['title']
-    form.body.data = article['body']
+    form.title.data = article[1]
+    form.body.data = article[3]
 
     if request.method == 'POST' and form.validate():
         title = request.form['title']
         body = request.form['body']
+ 
+
+        print("======================")
 
         # Create Cursor
         # cur = mysql.connection.cursor()
         app.logger.info(title)
         # Execute
-        cursor.execute ("UPDATE articles SET title=%s, body=%s WHERE id=%s",(title, body, id))
+        sql = "UPDATE articles SET title='"+title+"', body='"+body+"' WHERE id='"+id+"'"
+        print(sql)
+        cursor.execute(sql)
         # Commit to DB
-        mysql.connection.commit()
+        cnxn.commit()
 
         #Close connection
         # cur.close()
@@ -337,7 +344,8 @@ def delete_article(id):
     cursor.execute("DELETE FROM articles WHERE id = %s", [id])
 
     # Commit to DB
-    mysql.connection.commit()
+    # mysql.connection.commit()
+    cnxn.commit()
 
     #Close connection
     # cur.close()
